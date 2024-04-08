@@ -191,8 +191,9 @@ def NewTreasureBox():
         # Python에서는 ** 연산자를 써서 'a의 b제곱'을 a ** b와 같이 적을 수 있어요.
         distance = ( (dab_x - x) ** 2 + (dab_y - y) ** 2 ) ** 0.5
 
-        # 직선거리가 미리 정한 값 이하인 경우 bool 형식 True를 return
+        # 직선거리가 미리 정한 값 이하인 경우 이를 기록해 둔 다음 bool 형식 True를 return
         if distance <= dab_radius:
+            isAlreadyWon = True
             return True
 
         # 아직도 return하지 않은 경우 계산해 둔 직선거리 값(아마도 float 형식)을 return
