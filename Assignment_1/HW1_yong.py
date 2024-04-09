@@ -217,9 +217,58 @@ def NewTreasureBox():
 # 목표 2: (프로그래머가 아닌) 사용자가, 우리가 준비해 둔 prompt 등을 확인하면서 생각을 진행하여
 # 게임 한 판을 키보드로 직접 플레이할 수 있도록,
 # 함수 Game()에 대한 함수 정의 구성하기
+
 def Game():
-    # 아래에 있는 return문은 임시로 적어 두었어요. 코드 적기 시작할 때 지우면 돼요
-    return
+    global g
+    gType = 0
+    print("1) 숫자 야구\n2) 보물 찾기")
+    while gType == 0:
+        inputData = input("게임을 선택해주세요: ")
+        if inputData == "1":
+            gType = 1
+            g = NewNumberBaseball()
+            print("띄어쓰기로 구분한 1 이상 9 이하 숫자 3개를 입력해주세요.")
+        elif inputData == "2":
+            gType = 2
+            g = NewTreasureBox()
+            print("띄어쓰기로 구분한 0 이상 16 이하 숫자 2개를 입력해주세요.")
+        else:
+            print("올바르지 않은 입력입니다.")
+
+    while True:
+        inputData = input("> ").strip().split(" ")
+        if gType == 1:
+            if (len(inputData) != 3
+                    or not inputData[0].isnumeric()
+                    or not inputData[1].isnumeric()
+                    or not inputData[2].isnumeric()):
+                print("입력한 수가 올바르지 않습니다. 다시 입력해주세요.")
+                continue
+            result = g(int(inputData[0]), int(inputData[1]), int(inputData[2]))
+        else:
+            if (len(inputData) != 2
+                    or not inputData[0].isnumeric()
+                    or not inputData[1].isnumeric()):
+                print("입력한 수가 올바르지 않습니다. 다시 입력해주세요.")
+                continue
+            result = g(int(inputData[0]), int(inputData[1]))
+        if result is True:
+            print("성공입니다!")
+            break
+        elif result is False:
+            print("실패입니다!")
+            break
+        else:
+            print("다시 시도해보세요.\n이전 결과 : ", end="")
+            if gType == 1:
+                if result >= 10:
+                    print(f"{result // 10} Strike", end=" ")
+                if result % 10 > 0:
+                    print(f"{result % 10} Ball", end="")
+                print("")
+            else:
+                print(f"거리 : {result}")
+
 
 
 
