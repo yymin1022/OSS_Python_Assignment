@@ -4,7 +4,7 @@
 #
 # 주의: 첫 번째 문장인 import문을 제외하면, 여기 적혀 있는 내용은 전혀 바꾸면 안 돼요!
 
-import hw2_myfile as me
+import HW2_myfile_yong as me
 
 
 
