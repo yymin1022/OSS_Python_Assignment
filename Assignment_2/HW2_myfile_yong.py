@@ -18,7 +18,7 @@
 # TODO:
 # 새 list의 각 자리에 들어갈 값을, 규칙을 준수하는 선에서,
 # literal을 적어 가며 자유롭게 정해 주세요.
-mystat = ['Dev. LR', 0, 100, 0, 0, 0, 0 ]
+mystat = ['Dev. LR', 50, 50, 0, 0, 0, 0 ]
 
 
 # 함수 duel()은 인수로 받은 두 캐릭터의 우열을 가리는 함수입니다.
@@ -40,4 +40,36 @@ mystat = ['Dev. LR', 0, 100, 0, 0, 0, 0 ]
 # 꼼꼼하되 매우 편파적인 평가 기준을 세워 주세요!
 #
 def duel(left, right):
-    return 3
+    if left[1] != right[1]:
+        if left[1] > right[1]:
+            return -1
+        else:
+            return 1
+    if left[2] != right[2]:
+        if left[2] > right[2]:
+            return -1
+        else:
+            return 1
+    if left[3] != right[3]:
+        if left[3] > right[3]:
+            return -1
+        else:
+            return 1
+    if left[4] != right[4]:
+        if left[4] > right[4]:
+            return -1
+        else:
+            return 1
+    if left[5] != right[5]:
+        if left[5] > right[5]:
+            return -1
+        else:
+            return 1
+    if left[6] != right[6]:
+        if left[6] > right[6]:
+            return -1
+        else:
+            return 1
+    if left[0] == "Dev. LR":
+        return -1
+    return 1
