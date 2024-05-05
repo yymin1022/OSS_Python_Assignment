@@ -17,4 +17,13 @@
 
 
 def duel(left, right):
-    return (right[0] < left[0]) * 2 - 1
+    powerLeft = left[1] * 100000 + left[2] * 10000 + left[3] * 1000 + left[4] * 100 + left[5] * 10 + left[6]
+    powerRight = right[1] * 100000 + right[2] * 10000 + right[3] * 1000 + right[4] * 100 + right[5] * 10 + right[6]
+
+    if powerLeft != powerRight:
+        return -1 if powerLeft > powerRight else 1
+    if left[0] == "Dev. LR":
+        return -1
+    if right[0] == "Dev. LR":
+        return 1
+    return -1 if left[0] < right[0] else 1
