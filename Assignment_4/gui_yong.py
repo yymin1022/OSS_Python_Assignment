@@ -3,59 +3,71 @@ import random
 
 w = gui.Window(title='타이핑 게임', width=800, height=600, interval=1 / 60, printKeyInfos=True)
 
-words = ["hello", "world", "apple", "banana"]
-active_words = []
+words_active = []
+words_pool = ["hello", "world", "apple", "banana"]
+
 life_cnt = 3
+
+high_score = 0
 score = 0
 
 cheat_enabled = False
 cheat_enabled_time = 0
 cheat_time = 10
 cheat_word = "hellocheat"
-last_spawn_time = 0
-spawn_interval = 2
+
+word_last_spawn_time = 0
+word_spawn_interval = 2
+
 input_view = None
 input_word = ""
 
 
 def spawn_word():
-    word = random.choice(words)
+    global words_active
+    word_new = random.choice(words_pool)
     x = random.randint(50, w.internals얘는안봐도돼요.canvas.winfo_width() - 150)
     y = -20
-    obj_id = w.newText(x, y, width=100, text=word, fill_color='black', anchor='nw')
-    active_words.append({'text': word, 'id': obj_id, 'x': x, 'y': y})
+    obj_id = w.newText(x, y, width=100, text=word_new, fill_color='black', anchor='nw')
+    words_active.append({'text': word_new, 'id': obj_id, 'x': x, 'y': y})
 
 
 def initialize(timestamp):
-    global last_spawn_time, life_cnt, score, active_words, input_view
-    last_spawn_time = timestamp
+    global input_view, life_cnt, score, words_active, word_last_spawn_time
+    w.setTitle('Typing Game')
+
     life_cnt = 3
     score = 0
-    active_words.clear()
-    w.setTitle('Typing Game')
+
     input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
+
+    words_active.clear()
+    word_last_spawn_time = timestamp
 
 
 def update(timestamp):
-    global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, last_spawn_time, spawn_interval, life_cnt, score, input_view, input_word
-
-    if timestamp - last_spawn_time > spawn_interval:
-        spawn_word()
-        last_spawn_time = timestamp
+    global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, \
+        word_last_spawn_time, word_spawn_interval, \
+        life_cnt, score, input_view, input_word, \
+        words_active
 
     if timestamp - cheat_enabled_time > cheat_time:
         cheat_enabled = False
         cheat_enabled_time = 0
 
     if not cheat_enabled:
-        for word_info in active_words[:]:
+        if timestamp - word_last_spawn_time > word_spawn_interval:
+            spawn_word()
+            word_last_spawn_time = timestamp
+
+        for word_info in words_active[:]:
             word_info['y'] += 1
             w.moveObject(word_info['id'], word_info['x'], word_info['y'])
             if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
                 life_cnt -= 1
                 w.setTitle(f'타이핑 게임 - 목숨: {life_cnt}')
                 w.deleteObject(word_info['id'])
-                active_words.remove(word_info)
+                words_active.remove(word_info)
                 if life_cnt <= 0:
                     w.setTitle(f'타이핑 게임 - 게임 오버! 점수: {score}')
                     w.stop()
@@ -72,11 +84,11 @@ def update(timestamp):
                     cheat_enabled = True
                     cheat_enabled_time = timestamp
                 else:
-                    for word_info in active_words[:]:
+                    for word_info in words_active[:]:
                         if word_info['text'] == input_word:
                             score += 10
                             w.deleteObject(word_info['id'])
-                            active_words.remove(word_info)
+                            words_active.remove(word_info)
                         break
                 input_word = ""
             elif key == "BackSpace":
