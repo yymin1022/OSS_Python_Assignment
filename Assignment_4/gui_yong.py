@@ -8,6 +8,10 @@ active_words = []
 life_cnt = 3
 score = 0
 
+cheat_enabled = False
+cheat_enabled_time = 0
+cheat_time = 10
+cheat_word = "hellocheat"
 last_spawn_time = 0
 spawn_interval = 2
 input_view = None
@@ -33,24 +37,29 @@ def initialize(timestamp):
 
 
 def update(timestamp):
-    global last_spawn_time, spawn_interval, life_cnt, score, input_view, input_word
+    global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, last_spawn_time, spawn_interval, life_cnt, score, input_view, input_word
 
     if timestamp - last_spawn_time > spawn_interval:
         spawn_word()
         last_spawn_time = timestamp
 
-    for word_info in active_words[:]:
-        word_info['y'] += 1
-        w.moveObject(word_info['id'], word_info['x'], word_info['y'])
-        if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
-            life_cnt -= 1
-            w.setTitle(f'타이핑 게임 - 목숨: {life_cnt}')
-            w.deleteObject(word_info['id'])
-            active_words.remove(word_info)
-            if life_cnt <= 0:
-                w.setTitle(f'타이핑 게임 - 게임 오버! 점수: {score}')
-                w.stop()
-                return
+    if timestamp - cheat_enabled_time > cheat_time:
+        cheat_enabled = False
+        cheat_enabled_time = 0
+
+    if not cheat_enabled:
+        for word_info in active_words[:]:
+            word_info['y'] += 1
+            w.moveObject(word_info['id'], word_info['x'], word_info['y'])
+            if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
+                life_cnt -= 1
+                w.setTitle(f'타이핑 게임 - 목숨: {life_cnt}')
+                w.deleteObject(word_info['id'])
+                active_words.remove(word_info)
+                if life_cnt <= 0:
+                    w.setTitle(f'타이핑 게임 - 게임 오버! 점수: {score}')
+                    w.stop()
+                    return
 
     w.setText(input_view, f"입력: {input_word}")
 
@@ -59,11 +68,15 @@ def update(timestamp):
             w.keys[key] = False
 
             if key == "Return":
-                for word_info in active_words[:]:
-                    if word_info['text'] == input_word:
-                        score += 10
-                        w.deleteObject(word_info['id'])
-                        active_words.remove(word_info)
+                if input_word == cheat_word:
+                    cheat_enabled = True
+                    cheat_enabled_time = timestamp
+                else:
+                    for word_info in active_words[:]:
+                        if word_info['text'] == input_word:
+                            score += 10
+                            w.deleteObject(word_info['id'])
+                            active_words.remove(word_info)
                         break
                 input_word = ""
             elif key == "BackSpace":
