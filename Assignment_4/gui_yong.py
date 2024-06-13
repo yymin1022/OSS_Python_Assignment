@@ -1,34 +1,77 @@
-'''
-gui 모듈을 사용하기 위한 기본 구조를 미리 적어 둔 파일입니다.
-
-- 여러분은 이 아래에 있는, 함수 initialize()와 update()에 대한
-  함수 정의 내용물을 구성함으로써 프로그램을 구성해야 해요
-
-- 중간중간 F5를 눌러 interactive를 켜 둔 다음 진행하면
-  IDLE이 함수 호출식 적을 때마다 적당한 툴팁을 읽어 보여줄 거예요
-'''
-
 import gui_core as gui
+import random
 
-w = gui.Window()
+w = gui.Window(title='타이핑 게임', width=800, height=600, interval=1 / 60, printKeyInfos=True)
+
+words = ["hello", "world", "apple", "banana"]
+active_words = []
+life_cnt = 3
+score = 0
+
+last_spawn_time = 0
+spawn_interval = 2
+input_view = None
+input_word = ""
+
+
+def spawn_word():
+    word = random.choice(words)
+    x = random.randint(50, w.internals얘는안봐도돼요.canvas.winfo_width() - 150)
+    y = -20
+    obj_id = w.newText(x, y, width=100, text=word, fill_color='black', anchor='nw')
+    active_words.append({'text': word, 'id': obj_id, 'x': x, 'y': y})
 
 
 def initialize(timestamp):
-    '''
-    (이 도움말은 나중에 지워도 돼요)
-
-    이 함수 정의의 내용물은 '큰 반복'을 시작하기 직전에 딱 한 번 실행됩니다.
-    '''
-    pass
+    global last_spawn_time, life_cnt, score, active_words, input_view
+    last_spawn_time = timestamp
+    life_cnt = 3
+    score = 0
+    active_words.clear()
+    w.setTitle('Typing Game')
+    input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
 
 
 def update(timestamp):
-    '''
-    (이 도움말은 나중에 지워도 돼요)
+    global last_spawn_time, spawn_interval, life_cnt, score, input_view, input_word
 
-    이 함수 정의의 내용물은 매 시간 간격(프레임)마다 한 번씩 실행됩니다.
-    '''
-    pass
+    if timestamp - last_spawn_time > spawn_interval:
+        spawn_word()
+        last_spawn_time = timestamp
+
+    for word_info in active_words[:]:
+        word_info['y'] += 1
+        w.moveObject(word_info['id'], word_info['x'], word_info['y'])
+        if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
+            life_cnt -= 1
+            w.setTitle(f'타이핑 게임 - 목숨: {life_cnt}')
+            w.deleteObject(word_info['id'])
+            active_words.remove(word_info)
+            if life_cnt <= 0:
+                w.setTitle(f'타이핑 게임 - 게임 오버! 점수: {score}')
+                w.stop()
+                return
+
+    w.setText(input_view, f"입력: {input_word}")
+
+    for key in list(w.keys.keys()):
+        if w.keys[key]:
+            w.keys[key] = False
+
+            if key == "Return":
+                for word_info in active_words[:]:
+                    if word_info['text'] == input_word:
+                        score += 10
+                        w.deleteObject(word_info['id'])
+                        active_words.remove(word_info)
+                        break
+                input_word = ""
+            elif key == "BackSpace":
+                input_word = input_word[:-1]
+            elif key == "Escape":
+                exit(0)
+            elif len(key) == 1:
+                input_word += key
 
 
 w.initialize = initialize
