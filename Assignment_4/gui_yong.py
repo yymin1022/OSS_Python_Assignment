@@ -17,7 +17,7 @@ cheat_time = 10
 cheat_word = "hellocheat"
 
 word_last_spawn_time = 0
-word_spawn_interval = 2
+word_spawn_interval = 1
 
 input_view = None
 input_word = ""
@@ -26,7 +26,7 @@ input_word = ""
 def spawn_word():
     global words_active
     word_new = random.choice(words_pool)
-    x = random.randint(50, w.internals얘는안봐도돼요.canvas.winfo_width() - 150)
+    x = random.randint(150, w.internals얘는안봐도돼요.canvas.winfo_width() - 150)
     y = -20
     obj_id = w.newText(x, y, width=100, text=word_new, fill_color='black', anchor='nw')
     words_active.append({'text': word_new, 'id': obj_id, 'x': x, 'y': y})
@@ -60,16 +60,14 @@ def update(timestamp):
             spawn_word()
             word_last_spawn_time = timestamp
 
-        for word_info in words_active[:]:
+        for word_info in words_active:
             word_info['y'] += 1
             w.moveObject(word_info['id'], word_info['x'], word_info['y'])
             if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
                 life_cnt -= 1
-                w.setTitle(f'타이핑 게임 - 목숨: {life_cnt}')
                 w.deleteObject(word_info['id'])
                 words_active.remove(word_info)
                 if life_cnt <= 0:
-                    w.setTitle(f'타이핑 게임 - 게임 오버! 점수: {score}')
                     w.stop()
                     return
 
@@ -84,7 +82,7 @@ def update(timestamp):
                     cheat_enabled = True
                     cheat_enabled_time = timestamp
                 else:
-                    for word_info in words_active[:]:
+                    for word_info in words_active:
                         if word_info['text'] == input_word:
                             score += 10
                             w.deleteObject(word_info['id'])
@@ -94,7 +92,7 @@ def update(timestamp):
             elif key == "BackSpace":
                 input_word = input_word[:-1]
             elif key == "Escape":
-                exit(0)
+                w.stop()
             elif len(key) == 1:
                 input_word += key
 
