@@ -82,7 +82,9 @@ def update(timestamp):
         if w.keys[key]:
             w.keys[key] = False
 
-            if key == "Return":
+            if len(key) == 1 and is_alpha(key):
+                input_word += key
+            elif key == "Return":
                 if input_word == cheat_word:
                     cheat_enabled = True
                     cheat_enabled_time = timestamp
@@ -99,8 +101,6 @@ def update(timestamp):
                 input_word = input_word[:-1]
             elif key == "Escape":
                 w.stop()
-            elif is_alpha(key):
-                input_word += key
 
 
 w.initialize = initialize
