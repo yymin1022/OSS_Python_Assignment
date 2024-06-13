@@ -32,9 +32,13 @@ def spawn_word():
     words_active.append({'text': word_new, 'id': obj_id, 'x': x, 'y': y})
 
 
+def is_alpha(key):
+    return key in "abcdefghijklmnopqrstuvwxyz"
+
+
 def initialize(timestamp):
     global input_view, life_cnt, score, words_active, word_last_spawn_time
-    w.setTitle('Typing Game')
+    w.setTitle(f'Typing Game - Life : {life_cnt} | Score : {score}')
 
     life_cnt = 3
     score = 0
@@ -65,8 +69,9 @@ def update(timestamp):
             w.moveObject(word_info['id'], word_info['x'], word_info['y'])
             if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
                 life_cnt -= 1
-                w.deleteObject(word_info['id'])
                 words_active.remove(word_info)
+                w.deleteObject(word_info['id'])
+                w.setTitle(f'Typing Game - Life : {life_cnt} | Score : {score}')
                 if life_cnt <= 0:
                     w.stop()
                     return
@@ -85,15 +90,16 @@ def update(timestamp):
                     for word_info in words_active:
                         if word_info['text'] == input_word:
                             score += 10
-                            w.deleteObject(word_info['id'])
                             words_active.remove(word_info)
-                        break
+                            w.deleteObject(word_info['id'])
+                            w.setTitle(f'Typing Game - Life : {life_cnt} | Score : {score}')
+                            break
                 input_word = ""
             elif key == "BackSpace":
                 input_word = input_word[:-1]
             elif key == "Escape":
                 w.stop()
-            elif len(key) == 1:
+            elif is_alpha(key):
                 input_word += key
 
 
