@@ -103,8 +103,10 @@ def init_view(_):
     w.setTitle(f'Typing Game')
 
     img_bg_view = w.newImage(-5, -5, "img_bg.png", new_width=window_width + 5, new_height=window_height + 5)
-    cheat_status_view = w.newText(window_width - 10, 10, width=200, text="", anchor="ne")
-    input_view = w.newText(window_width / 2, window_height - 50, width=400, text="Press Return to Start", anchor='center')
+    input_view = w.newText(window_width / 2, window_height - 50, width=400, text="Press Return to Start",
+                           anchor='center', fill_color='white')
+
+    cheat_status_view = w.newText(window_width - 20, 20, width=200, text="", anchor="ne", fill_color='white')
     life_view = w.newText(40, 60, width=200, text=f"Life Remained: {life_cnt}", anchor='nw')
     score_current_view = w.newText(40, 80, width=200, text=f"Current Score: {score_current}", anchor='nw')
     score_total_view = w.newText(40, 100, width=200, text=f"Total Score: {score_total}", anchor='nw')
