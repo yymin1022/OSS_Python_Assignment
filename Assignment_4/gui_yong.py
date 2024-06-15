@@ -7,7 +7,14 @@ window_width = 800
 w = gui.Window(title='타이핑 게임', width=window_width, height=window_height, interval=1 / 60, printKeyInfos=True)
 
 words_active = []
-words_pool = ["hello", "world", "apple", "banana"]
+words_pool = [
+    "apple", "ball", "cat", "dog", "elephant",
+    "fish", "grape", "house", "ice", "juice",
+    "kite", "lion", "monkey", "nose", "orange",
+    "pencil", "queen", "rabbit", "sun", "tree",
+    "umbrella", "van", "water", "xylophone", "yarn",
+    "zebra", "book", "chair", "door", "egg"
+]
 
 life_cnt = 3
 
