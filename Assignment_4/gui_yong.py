@@ -50,9 +50,10 @@ def spawn_word():
 
 
 def start_game(timestamp):
-    global game_started, score_current, words_active, word_last_spawn_time, \
+    global cheat_enabled, game_started, score_current, words_active, word_last_spawn_time, \
         input_view
 
+    cheat_enabled = False
     score_current = 0
 
     words_active.clear()
@@ -75,6 +76,14 @@ def stop_game():
     update_text()
     game_started = False
 
+
+def reset_game():
+    global cur_stage, life_cnt, score_current, score_total
+
+    cur_stage = 1
+    life_cnt = 3
+    score_current = 0
+    score_total = 0
 
 def update_text():
     global cheat_enabled, game_started, \
@@ -147,8 +156,8 @@ def update_view(timestamp):
                     words_active.remove(word_info)
                     w.deleteObject(word_info['id'])
                     if life_cnt <= 0:
-                        w.stop()
-                        return
+                        reset_game()
+                        stop_game()
 
         if score_current >= 100:
             cur_stage += 1
