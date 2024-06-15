@@ -102,23 +102,13 @@ def init_view(timestamp):
         cheat_status_view, img_bg_view, input_view, life_view, score_current_view, score_total_view, stage_view
     w.setTitle(f'Typing Game')
 
-    life_cnt = 3
-
-    cur_stage = 1
-    game_started = False
-    score_current = 0
-    score_total = 0
-
-    cheat_status_view = w.newText(window_width - 10, 10, width=200, text="", anchor="ne")
     img_bg_view = w.newImage(-2, -2, "img_bg.png", new_width=window_width + 2, new_height=window_height + 2)
+    cheat_status_view = w.newText(window_width - 10, 10, width=200, text="", anchor="ne")
     input_view = w.newText(window_width / 2, window_height - 20, width=400, text="Press Return to Start", anchor='center')
     life_view = w.newText(10, 30, width=200, text=f"Life Remained: {life_cnt}", anchor='nw')
     score_current_view = w.newText(10, 50, width=200, text=f"Current Score: {score_current}", anchor='nw')
     score_total_view = w.newText(10, 70, width=200, text=f"Total Score: {score_total}", anchor='nw')
     stage_view = w.newText(10, 10, width=200, text=f"Current Stage: {cur_stage}", anchor='nw')
-
-    words_active.clear()
-    word_last_spawn_time = timestamp
 
 
 def update_view(timestamp):
