@@ -12,6 +12,7 @@ words_pool = ["hello", "world", "apple", "banana"]
 life_cnt = 3
 
 cur_stage = 1
+game_started = False
 score_current = 0
 score_high = 0
 score_total = 0
@@ -42,12 +43,13 @@ def is_alpha(key):
 
 
 def initialize(timestamp):
-    global cur_stage, input_view, life_cnt, score_current, score_high, score_total, words_active, word_last_spawn_time
+    global cur_stage, game_started, input_view, life_cnt, score_current, score_high, score_total, words_active, word_last_spawn_time
     w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
 
     life_cnt = 3
 
-    cur_stage = 3
+    cur_stage = 1
+    game_started = False
     score_current = 0
     score_high = 0
     score_total = 0
@@ -60,56 +62,64 @@ def initialize(timestamp):
 
 def update(timestamp):
     global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, \
-        word_last_spawn_time, word_spawn_interval, \
-        life_cnt, score_current, input_view, input_word, \
-        words_active
+        words_active, word_last_spawn_time, word_spawn_interval, \
+        game_started, life_cnt, score_current, input_view, input_word
 
-    if timestamp - cheat_enabled_time > cheat_time:
-        cheat_enabled = False
-        cheat_enabled_time = 0
-
-    if not cheat_enabled:
-        if timestamp - word_last_spawn_time > word_spawn_interval:
-            spawn_word()
-            word_last_spawn_time = timestamp
-
-        for word_info in words_active:
-            word_info['y'] += 1.5 * cur_stage
-            w.moveObject(word_info['id'], word_info['x'], word_info['y'])
-            if word_info['y'] > window_height:
-                life_cnt -= 1
-                words_active.remove(word_info)
-                w.deleteObject(word_info['id'])
-                w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
-                if life_cnt <= 0:
+    if not game_started:
+        for key in list(w.keys.keys()):
+            if w.keys[key]:
+                w.keys[key] = False
+                if key == "Return":
+                    game_started = True
+                elif key == "Escape":
                     w.stop()
-                    return
+    else:
+        if timestamp - cheat_enabled_time > cheat_time:
+            cheat_enabled = False
+            cheat_enabled_time = 0
 
-    w.setText(input_view, f"입력: {input_word}")
+        if not cheat_enabled:
+            if timestamp - word_last_spawn_time > word_spawn_interval:
+                spawn_word()
+                word_last_spawn_time = timestamp
 
-    for key in list(w.keys.keys()):
-        if w.keys[key]:
-            w.keys[key] = False
+            for word_info in words_active:
+                word_info['y'] += 1.5 * cur_stage
+                w.moveObject(word_info['id'], word_info['x'], word_info['y'])
+                if word_info['y'] > window_height:
+                    life_cnt -= 1
+                    words_active.remove(word_info)
+                    w.deleteObject(word_info['id'])
+                    w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
+                    if life_cnt <= 0:
+                        w.stop()
+                        return
 
-            if len(key) == 1 and is_alpha(key):
-                input_word += key
-            elif key == "Return":
-                if input_word == cheat_word:
-                    cheat_enabled = True
-                    cheat_enabled_time = timestamp
-                else:
-                    for word_info in words_active:
-                        if word_info['text'] == input_word:
-                            score_current += 10
-                            words_active.remove(word_info)
-                            w.deleteObject(word_info['id'])
-                            w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
-                            break
-                input_word = ""
-            elif key == "BackSpace":
-                input_word = input_word[:-1]
-            elif key == "Escape":
-                w.stop()
+        w.setText(input_view, f"입력: {input_word}")
+
+        for key in list(w.keys.keys()):
+            if w.keys[key]:
+                w.keys[key] = False
+
+                if len(key) == 1 and is_alpha(key):
+                    input_word += key
+                elif key == "Return":
+                    if input_word == cheat_word:
+                        cheat_enabled = True
+                        cheat_enabled_time = timestamp
+                    else:
+                        for word_info in words_active:
+                            if word_info['text'] == input_word:
+                                score_current += 10
+                                words_active.remove(word_info)
+                                w.deleteObject(word_info['id'])
+                                w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
+                                break
+                    input_word = ""
+                elif key == "BackSpace":
+                    input_word = input_word[:-1]
+                elif key == "Escape":
+                    w.stop()
 
 
 w.initialize = initialize
