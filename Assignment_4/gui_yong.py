@@ -29,6 +29,10 @@ input_view = None
 input_word = ""
 
 
+def is_alpha(key):
+    return key in "abcdefghijklmnopqrstuvwxyz"
+
+
 def spawn_word():
     global words_active
     word_new = random.choice(words_pool)
@@ -38,13 +42,36 @@ def spawn_word():
     words_active.append({'text': word_new, 'id': obj_id, 'x': x, 'y': y})
 
 
-def is_alpha(key):
-    return key in "abcdefghijklmnopqrstuvwxyz"
+def start_game(timestamp):
+    global game_started, input_view, score_current, words_active, word_last_spawn_time
+
+    score_current = 0
+
+    words_active.clear()
+    word_last_spawn_time = timestamp
+
+    input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
+    game_started = True
+
+
+def stop_game():
+    global game_started, input_view, score_current, score_high, score_total
+
+    score_total += score_current
+    score_high = max(score_total, score_high)
+
+    for word_info in words_active:
+        w.deleteObject(word_info['id'])
+    words_active.clear()
+
+    w.deleteObject(input_view)
+    input_view = None
+    game_started = False
 
 
 def init_view(timestamp):
     global cur_stage, game_started, input_view, life_cnt, score_current, score_high, score_total, words_active, word_last_spawn_time
-    w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
+    w.setTitle(f'Typing Game')
 
     life_cnt = 3
 
@@ -57,20 +84,18 @@ def init_view(timestamp):
     words_active.clear()
     word_last_spawn_time = timestamp
 
-    input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
-
 
 def update_view(timestamp):
     global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, \
         words_active, word_last_spawn_time, word_spawn_interval, \
-        game_started, life_cnt, score_current, input_view, input_word
+        game_started, life_cnt, cur_stage, score_current, input_view, input_word
 
     if not game_started:
         for key in list(w.keys.keys()):
             if w.keys[key]:
                 w.keys[key] = False
                 if key == "Return":
-                    game_started = True
+                    start_game(timestamp)
                 elif key == "Escape":
                     w.stop()
     else:
@@ -90,12 +115,15 @@ def update_view(timestamp):
                     life_cnt -= 1
                     words_active.remove(word_info)
                     w.deleteObject(word_info['id'])
-                    w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
                     if life_cnt <= 0:
                         w.stop()
                         return
 
         w.setText(input_view, f"입력: {input_word}")
+
+        if score_current >= 100:
+            cur_stage += 1
+            stop_game()
 
         for key in list(w.keys.keys()):
             if w.keys[key]:
@@ -113,7 +141,6 @@ def update_view(timestamp):
                                 score_current += 10
                                 words_active.remove(word_info)
                                 w.deleteObject(word_info['id'])
-                                w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
                                 break
                     input_word = ""
                 elif key == "BackSpace":
