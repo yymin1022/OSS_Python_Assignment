@@ -11,8 +11,10 @@ words_pool = ["hello", "world", "apple", "banana"]
 
 life_cnt = 3
 
-high_score = 0
-score = 0
+cur_stage = 1
+score_current = 0
+score_high = 0
+score_total = 0
 
 cheat_enabled = False
 cheat_enabled_time = 0
@@ -40,22 +42,26 @@ def is_alpha(key):
 
 
 def initialize(timestamp):
-    global input_view, life_cnt, score, words_active, word_last_spawn_time
-    w.setTitle(f'Typing Game - Life : {life_cnt} | Score : {score}')
+    global cur_stage, input_view, life_cnt, score_current, score_high, score_total, words_active, word_last_spawn_time
+    w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
 
     life_cnt = 3
-    score = 0
 
-    input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
+    cur_stage = 3
+    score_current = 0
+    score_high = 0
+    score_total = 0
 
     words_active.clear()
     word_last_spawn_time = timestamp
+
+    input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
 
 
 def update(timestamp):
     global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, \
         word_last_spawn_time, word_spawn_interval, \
-        life_cnt, score, input_view, input_word, \
+        life_cnt, score_current, input_view, input_word, \
         words_active
 
     if timestamp - cheat_enabled_time > cheat_time:
@@ -68,13 +74,13 @@ def update(timestamp):
             word_last_spawn_time = timestamp
 
         for word_info in words_active:
-            word_info['y'] += 1
+            word_info['y'] += 1.5 * cur_stage
             w.moveObject(word_info['id'], word_info['x'], word_info['y'])
             if word_info['y'] > window_height:
                 life_cnt -= 1
                 words_active.remove(word_info)
                 w.deleteObject(word_info['id'])
-                w.setTitle(f'Typing Game - Life : {life_cnt} | Score : {score}')
+                w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
                 if life_cnt <= 0:
                     w.stop()
                     return
@@ -94,10 +100,10 @@ def update(timestamp):
                 else:
                     for word_info in words_active:
                         if word_info['text'] == input_word:
-                            score += 10
+                            score_current += 10
                             words_active.remove(word_info)
                             w.deleteObject(word_info['id'])
-                            w.setTitle(f'Typing Game - Life : {life_cnt} | Score : {score}')
+                            w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
                             break
                 input_word = ""
             elif key == "BackSpace":
