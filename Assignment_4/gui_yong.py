@@ -140,7 +140,7 @@ def update_view(timestamp):
             for word_info in words_active:
                 word_info['y'] += 1.5 * cur_stage
                 w.moveObject(word_info['id'], word_info['x'], word_info['y'])
-                if word_info['y'] > window_height:
+                if word_info['y'] > window_height - 110:
                     life_cnt -= 1
                     words_active.remove(word_info)
                     w.deleteObject(word_info['id'])
