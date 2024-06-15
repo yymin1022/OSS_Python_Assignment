@@ -1,7 +1,10 @@
 import gui_core as gui
 import random
 
-w = gui.Window(title='타이핑 게임', width=800, height=600, interval=1 / 60, printKeyInfos=True)
+window_height = 600
+window_width = 800
+
+w = gui.Window(title='타이핑 게임', width=window_width, height=window_height, interval=1 / 60, printKeyInfos=True)
 
 words_active = []
 words_pool = ["hello", "world", "apple", "banana"]
@@ -26,7 +29,7 @@ input_word = ""
 def spawn_word():
     global words_active
     word_new = random.choice(words_pool)
-    x = random.randint(150, w.internals얘는안봐도돼요.canvas.winfo_width() - 150)
+    x = random.randint(150, window_width - 150)
     y = -20
     obj_id = w.newText(x, y, width=100, text=word_new, fill_color='black', anchor='nw')
     words_active.append({'text': word_new, 'id': obj_id, 'x': x, 'y': y})
@@ -67,7 +70,7 @@ def update(timestamp):
         for word_info in words_active:
             word_info['y'] += 1
             w.moveObject(word_info['id'], word_info['x'], word_info['y'])
-            if word_info['y'] > w.internals얘는안봐도돼요.canvas.winfo_height():
+            if word_info['y'] > window_height:
                 life_cnt -= 1
                 words_active.remove(word_info)
                 w.deleteObject(word_info['id'])
