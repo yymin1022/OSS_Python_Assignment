@@ -14,7 +14,6 @@ life_cnt = 3
 cur_stage = 1
 game_started = False
 score_current = 0
-score_high = 0
 score_total = 0
 
 cheat_enabled = False
@@ -26,6 +25,11 @@ word_last_spawn_time = 0
 word_spawn_interval = 1
 
 input_view = None
+life_view = None
+score_current_view = None
+score_total_view = None
+stage_view = None
+
 input_word = ""
 
 
@@ -35,42 +39,56 @@ def is_alpha(key):
 
 def spawn_word():
     global words_active
+
     word_new = random.choice(words_pool)
     x = random.randint(150, window_width - 150)
     y = -20
-    obj_id = w.newText(x, y, width=100, text=word_new, fill_color='black', anchor='nw')
+    obj_id = w.newText(x, y, width=100, text=word_new, fill_color='black', anchor='center')
     words_active.append({'text': word_new, 'id': obj_id, 'x': x, 'y': y})
 
 
 def start_game(timestamp):
-    global game_started, input_view, score_current, words_active, word_last_spawn_time
+    global game_started, score_current, words_active, word_last_spawn_time, \
+        input_view
 
     score_current = 0
 
     words_active.clear()
     word_last_spawn_time = timestamp
 
-    input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
+    update_text()
     game_started = True
 
 
 def stop_game():
-    global game_started, input_view, score_current, score_high, score_total
+    global game_started, input_view, score_current, score_total
 
     score_total += score_current
-    score_high = max(score_total, score_high)
+    score_current = 0
 
     for word_info in words_active:
         w.deleteObject(word_info['id'])
     words_active.clear()
 
-    w.deleteObject(input_view)
-    input_view = None
+    update_text()
     game_started = False
 
 
+def update_text():
+    if game_started:
+        w.setText(input_view, input_word)
+    else:
+        w.setText(input_view, "Press Return to Start")
+    w.setText(life_view, f"Life Remained: {life_cnt}")
+    w.setText(score_current_view, f"Current Score: {score_current}")
+    w.setText(score_total_view, f"Total Score: {score_total}")
+    w.setText(stage_view, f"Current Stage: {cur_stage}")
+
+
 def init_view(timestamp):
-    global cur_stage, game_started, input_view, life_cnt, score_current, score_high, score_total, words_active, word_last_spawn_time
+    global cur_stage, game_started, life_cnt, score_current, score_total, \
+        words_active, word_last_spawn_time, \
+        input_view, life_view, score_current_view, score_total_view, stage_view
     w.setTitle(f'Typing Game')
 
     life_cnt = 3
@@ -78,8 +96,13 @@ def init_view(timestamp):
     cur_stage = 1
     game_started = False
     score_current = 0
-    score_high = 0
     score_total = 0
+
+    input_view = w.newText(window_width / 2, window_height - 20, width=400, text="Press Return to Start", anchor='center')
+    life_view = w.newText(10, 30, width=200, text=f"Life Remained: {life_cnt}", anchor='nw')
+    score_current_view = w.newText(10, 50, width=200, text=f"Current Score: {score_current}", anchor='nw')
+    score_total_view = w.newText(10, 70, width=200, text=f"Total Score: {score_total}", anchor='nw')
+    stage_view = w.newText(10, 10, width=200, text=f"Current Stage: {cur_stage}", anchor='nw')
 
     words_active.clear()
     word_last_spawn_time = timestamp
@@ -87,8 +110,11 @@ def init_view(timestamp):
 
 def update_view(timestamp):
     global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, \
+        game_started, input_word, life_cnt, cur_stage, score_current, \
         words_active, word_last_spawn_time, word_spawn_interval, \
-        game_started, life_cnt, cur_stage, score_current, input_view, input_word
+        input_view, life_view, score_current_view, score_total_view, stage_view
+
+    update_text()
 
     if not game_started:
         for key in list(w.keys.keys()):
@@ -118,8 +144,6 @@ def update_view(timestamp):
                     if life_cnt <= 0:
                         w.stop()
                         return
-
-        w.setText(input_view, f"입력: {input_word}")
 
         if score_current >= 100:
             cur_stage += 1
