@@ -8,25 +8,24 @@ w = gui.Window(title='타이핑 게임', width=window_width, height=window_heigh
 
 words_active = []
 words_pool = [
-    "apple", "ball", "cat", "dog", "elephant",
-    "fish", "grape", "house", "ice", "juice",
-    "kite", "lion", "monkey", "nose", "orange",
-    "pencil", "queen", "rabbit", "sun", "tree",
-    "umbrella", "van", "water", "xylophone", "yarn",
-    "zebra", "book", "chair", "door", "egg"
+    'apple', 'ball', 'cat', 'dog', 'elephant',
+    'fish', 'grape', 'house', 'ice', 'juice',
+    'kite', 'lion', 'monkey', 'nose', 'orange',
+    'pencil', 'queen', 'rabbit', 'sun', 'tree',
+    'umbrella', 'van', 'water', 'xylophone', 'yarn',
+    'zebra', 'book', 'chair', 'door', 'egg'
 ]
-
-life_cnt = 3
 
 cur_stage = 1
 game_started = False
+life_cnt = 3
 score_current = 0
 score_total = 0
 
 cheat_enabled = False
 cheat_enabled_time = 0
 cheat_time = 10
-cheat_word = "hellocheat"
+cheat_word = 'hellocheat'
 
 word_last_spawn_time = 0
 word_spawn_interval = 1
@@ -43,7 +42,7 @@ input_word = ""
 
 
 def is_alpha(key):
-    return key in "abcdefghijklmnopqrstuvwxyz"
+    return key in 'abcdefghijklmnopqrstuvwxyz'
 
 
 def spawn_word():
@@ -71,7 +70,7 @@ def start_game(timestamp):
 
 
 def stop_game():
-    global game_started, input_view, score_current, score_total
+    global game_started, score_current, score_total, input_view
 
     score_total += score_current
     score_current = 0
@@ -99,17 +98,17 @@ def update_text():
     if game_started:
         w.setText(input_view, input_word)
     else:
-        w.setText(input_view, "Press Return to Start")
+        w.setText(input_view, 'Press Return to Start')
 
     if cheat_enabled:
-        w.setText(cheat_status_view, "CHEAT MODE")
+        w.setText(cheat_status_view, 'CHEAT MODE')
     else:
         w.setText(cheat_status_view, "")
 
-    w.setText(life_view, f"Life Remained: {life_cnt}")
-    w.setText(score_current_view, f"Current Score: {score_current}")
-    w.setText(score_total_view, f"Total Score: {score_total}")
-    w.setText(stage_view, f"Current Stage: {cur_stage}")
+    w.setText(life_view, f'Life Remained: {life_cnt}')
+    w.setText(score_current_view, f'Current Score: {score_current}')
+    w.setText(score_total_view, f'Total Score: {score_total}')
+    w.setText(stage_view, f'Current Stage: {cur_stage}')
 
 
 def init_view(_):
@@ -118,15 +117,15 @@ def init_view(_):
         cheat_status_view, img_bg_view, input_view, life_view, score_current_view, score_total_view, stage_view
     w.setTitle(f'Typing Game')
 
-    img_bg_view = w.newImage(-5, -5, "img_bg.png", new_width=window_width + 5, new_height=window_height + 5)
-    input_view = w.newText(window_width / 2, window_height - 50, width=400, text="Press Return to Start",
+    img_bg_view = w.newImage(-5, -5, 'img_bg.png', new_width=window_width + 5, new_height=window_height + 5)
+    input_view = w.newText(window_width / 2, window_height - 50, width=400, text='Press Return to Start',
                            anchor='center', fill_color='white')
 
-    cheat_status_view = w.newText(window_width - 20, 20, width=200, text="", anchor="ne", fill_color='white')
-    life_view = w.newText(40, 60, width=200, text=f"Life Remained: {life_cnt}", anchor='nw')
-    score_current_view = w.newText(40, 80, width=200, text=f"Current Score: {score_current}", anchor='nw')
-    score_total_view = w.newText(40, 100, width=200, text=f"Total Score: {score_total}", anchor='nw')
-    stage_view = w.newText(40, 40, width=200, text=f"Current Stage: {cur_stage}", anchor='nw')
+    cheat_status_view = w.newText(window_width - 20, 20, width=200, text="", anchor='ne', fill_color='white')
+    life_view = w.newText(40, 60, width=200, text=f'Life Remained: {life_cnt}', anchor='nw')
+    score_current_view = w.newText(40, 80, width=200, text=f'Current Score: {score_current}', anchor='nw')
+    score_total_view = w.newText(40, 100, width=200, text=f'Total Score: {score_total}', anchor='nw')
+    stage_view = w.newText(40, 40, width=200, text=f'Current Stage: {cur_stage}', anchor='nw')
 
 
 def update_view(timestamp):
@@ -141,9 +140,9 @@ def update_view(timestamp):
         for key in list(w.keys.keys()):
             if w.keys[key]:
                 w.keys[key] = False
-                if key == "Return":
+                if key == 'Return':
                     start_game(timestamp)
-                elif key == "Escape":
+                elif key == 'Escape':
                     w.stop()
     else:
         if timestamp - cheat_enabled_time > cheat_time:
@@ -176,7 +175,7 @@ def update_view(timestamp):
 
                 if len(key) == 1 and is_alpha(key):
                     input_word += key
-                elif key == "Return":
+                elif key == 'Return':
                     if input_word == cheat_word:
                         cheat_enabled = True
                         cheat_enabled_time = timestamp
@@ -188,9 +187,9 @@ def update_view(timestamp):
                                 w.deleteObject(word_info['id'])
                                 break
                     input_word = ""
-                elif key == "BackSpace":
+                elif key == 'BackSpace':
                     input_word = input_word[:-1]
-                elif key == "Escape":
+                elif key == 'Escape':
                     w.stop()
 
 
