@@ -42,7 +42,7 @@ def is_alpha(key):
     return key in "abcdefghijklmnopqrstuvwxyz"
 
 
-def initialize(timestamp):
+def init_view(timestamp):
     global cur_stage, game_started, input_view, life_cnt, score_current, score_high, score_total, words_active, word_last_spawn_time
     w.setTitle(f'Typing Game - Life : {life_cnt} | score_current : {score_current}')
 
@@ -60,7 +60,7 @@ def initialize(timestamp):
     input_view = w.newText(10, 10, width=400, text=f"입력: {input_word}")
 
 
-def update(timestamp):
+def update_view(timestamp):
     global cheat_enabled, cheat_enabled_time, cheat_time, cheat_word, \
         words_active, word_last_spawn_time, word_spawn_interval, \
         game_started, life_cnt, score_current, input_view, input_word
@@ -122,7 +122,7 @@ def update(timestamp):
                     w.stop()
 
 
-w.initialize = initialize
-w.update = update
+w.initialize = init_view
+w.update = update_view
 
 w.start()
