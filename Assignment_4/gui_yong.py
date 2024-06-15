@@ -24,6 +24,7 @@ cheat_word = "hellocheat"
 word_last_spawn_time = 0
 word_spawn_interval = 1
 
+cheat_status_view = None
 input_view = None
 life_view = None
 score_current_view = None
@@ -75,10 +76,19 @@ def stop_game():
 
 
 def update_text():
+    global cheat_enabled, game_started, \
+        cheat_status_view, input_view, life_view, score_current_view, score_total_view, stage_view
+
     if game_started:
         w.setText(input_view, input_word)
     else:
         w.setText(input_view, "Press Return to Start")
+        
+    if cheat_enabled:
+        w.setText(cheat_status_view, "CHEAT MODE")
+    else:
+        w.setText(cheat_status_view, "")
+
     w.setText(life_view, f"Life Remained: {life_cnt}")
     w.setText(score_current_view, f"Current Score: {score_current}")
     w.setText(score_total_view, f"Total Score: {score_total}")
@@ -88,7 +98,7 @@ def update_text():
 def init_view(timestamp):
     global cur_stage, game_started, life_cnt, score_current, score_total, \
         words_active, word_last_spawn_time, \
-        input_view, life_view, score_current_view, score_total_view, stage_view
+        cheat_status_view, input_view, life_view, score_current_view, score_total_view, stage_view
     w.setTitle(f'Typing Game')
 
     life_cnt = 3
@@ -98,6 +108,7 @@ def init_view(timestamp):
     score_current = 0
     score_total = 0
 
+    cheat_status_view = w.newText(window_width - 10, 10, width=200, text="", anchor="ne")
     input_view = w.newText(window_width / 2, window_height - 20, width=400, text="Press Return to Start", anchor='center')
     life_view = w.newText(10, 30, width=200, text=f"Life Remained: {life_cnt}", anchor='nw')
     score_current_view = w.newText(10, 50, width=200, text=f"Current Score: {score_current}", anchor='nw')
