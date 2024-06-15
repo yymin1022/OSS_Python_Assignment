@@ -91,6 +91,7 @@ def reset_game():
     score_current = 0
     score_total = 0
 
+
 def update_text():
     global cheat_enabled, game_started, \
         cheat_status_view, input_view, life_view, score_current_view, score_total_view, stage_view
