@@ -96,7 +96,7 @@ def update_text():
     w.setText(stage_view, f"Current Stage: {cur_stage}")
 
 
-def init_view(timestamp):
+def init_view(_):
     global cur_stage, game_started, life_cnt, score_current, score_total, \
         words_active, word_last_spawn_time, \
         cheat_status_view, img_bg_view, input_view, life_view, score_current_view, score_total_view, stage_view
