@@ -83,7 +83,7 @@ def update_text():
         w.setText(input_view, input_word)
     else:
         w.setText(input_view, "Press Return to Start")
-        
+
     if cheat_enabled:
         w.setText(cheat_status_view, "CHEAT MODE")
     else:
